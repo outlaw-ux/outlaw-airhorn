@@ -1,0 +1,16 @@
+{
+  "name": "Outlaw Airhorn",
+  "short_name": "Airhorn",
+  "description": "DJ Airhorn by OutlawUX",
+  "lang": "en-US",
+  "start_url": "/",
+  "display": "minimal-ui",
+  "theme_color": "#4c6085",
+  "icons": [
+    {
+      "src": "airhorn.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    }
+  ]
+}
