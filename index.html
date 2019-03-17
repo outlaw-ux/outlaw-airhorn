@@ -78,7 +78,7 @@
       .play svg {
         transition: fill 150ms ease-in-out;
         fill: #4c6085;
-        width: 50vw;
+        height: 50vh;
       }
 
       .play svg:hover {
@@ -153,7 +153,7 @@
 
     function getData() {
       request = new XMLHttpRequest();
-      request.open("GET", "airhorn.mp3", true);
+      request.open("GET", "https://outlaw-ux.github.io/outlaw-airhorn/airhorn.mp3", true);
       request.responseType = "arraybuffer";
 
       request.onload = function() {
