@@ -130,13 +130,33 @@
     </footer>
   </body>
   <script>
-    const audioCtx = new AudioContext();
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     const offlineCtx = new OfflineAudioContext(2, 44100 * 40, 44100);
     const play = document.querySelector(".play");
 
     source = offlineCtx.createBufferSource();
 
-    function getData() {
+    if (audioCtx) {
+      unlockAudioContext(audioCtx);
+      getData(audioCtx);
+    }
+
+    if (offlineCtx) {
+      offlineCtx.oncomplete = function(e) {
+        const audioCtx = new (window.AudioContext ||
+          window.webkitAudioContext)();
+        const horn = audioCtx.createBufferSource();
+        horn.buffer = e.renderedBuffer;
+
+        horn.connect(audioCtx.destination);
+
+        play.onclick = function() {
+          horn.start();
+        };
+      };
+    }
+
+    function getData(audioCtx) {
       request = new XMLHttpRequest();
       request.open("GET", "airhorn.mp3", true);
       request.responseType = "arraybuffer";
@@ -163,18 +183,17 @@
       request.send();
     }
 
-    getData();
-
-    offlineCtx.oncomplete = function(e) {
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const horn = audioCtx.createBufferSource();
-      horn.buffer = e.renderedBuffer;
-
-      horn.connect(audioCtx.destination);
-
-      play.onclick = function() {
-        horn.start();
-      };
-    };
+    function unlockAudioContext(audioCtx) {
+      if (audioCtx.state !== "suspended") return;
+      const b = document.body;
+      const events = ["touchstart", "touchend", "mousedown", "keydown"];
+      events.forEach(e => b.addEventListener(e, unlock, false));
+      function unlock() {
+        audioCtx.resume().then(clean);
+      }
+      function clean() {
+        events.forEach(e => b.removeEventListener(e, unlock));
+      }
+    }
   </script>
 </html>
