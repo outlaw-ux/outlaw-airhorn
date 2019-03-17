@@ -136,27 +136,22 @@
 
     source = offlineCtx.createBufferSource();
 
-    if (audioCtx) {
-      unlockAudioContext(audioCtx);
-      getData(audioCtx);
-    }
+    unlockAudioContext(audioCtx);
+    getData();
 
-    if (offlineCtx) {
-      offlineCtx.oncomplete = function(e) {
-        const audioCtx = new (window.AudioContext ||
-          window.webkitAudioContext)();
-        const horn = audioCtx.createBufferSource();
-        horn.buffer = e.renderedBuffer;
+    offlineCtx.oncomplete = function(e) {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const horn = audioCtx.createBufferSource();
+      horn.buffer = e.renderedBuffer;
 
-        horn.connect(audioCtx.destination);
+      horn.connect(audioCtx.destination);
 
-        play.onclick = function() {
-          horn.start();
-        };
+      play.onclick = function() {
+        horn.start();
       };
-    }
+    };
 
-    function getData(audioCtx) {
+    function getData() {
       request = new XMLHttpRequest();
       request.open("GET", "airhorn.mp3", true);
       request.responseType = "arraybuffer";
