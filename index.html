@@ -133,11 +133,12 @@
   </body>
   <script>
     var soundID = "Airhorn";
-    var events = ["touchstart", "touchend", "mousedown", "keydown"];
+    var events = ["touchstart", "click"];
 
-    events.forEach(e => document.body.addEventListener(e, playSound, false));
+    events.forEach(e => document.querySelector(".play").addEventListener(e, playSound, false));
 
     function loadSound () {
+      createjs.Sound.registerPlugins([createjs.WebAudioPlugin]);
       createjs.Sound.registerSound("airhorn.mp3", soundID);
     }
 
