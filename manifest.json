@@ -3,7 +3,7 @@
   "short_name": "Airhorn",
   "description": "DJ Airhorn by OutlawUX",
   "lang": "en-US",
-  "start_url": "/",
+  "start_url": "https://outlaw-ux.github.io/outlaw-airhorn/",
   "display": "minimal-ui",
   "theme_color": "#4c6085",
   "icons": [
