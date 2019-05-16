@@ -31,6 +31,8 @@
       href="airhorn.svg"
     />
 
+    <script src="https://code.createjs.com/1.0.0/soundjs.min.js"></script>
+
     <title>Outlaw Airhorn</title>
 
     <!--[if lt IE 9]>
@@ -103,8 +105,8 @@
     </style>
   </head>
 
-  <body>
-    <button class="play">
+  <body onload="loadSound();">
+    <button onclick="playSound();" class="play">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1336 1675">
         <path
           d="M1085.199 332.692C921.543 157.11 742.282 61.216 672.418 74.109c-26.358 4.864-48.078 15.089-55.412 43.529-15.118 58.632 39.641 156.954 72.231 207.613 150.534 233.994 427.27 432.28 540.731 414.184 111.583-17.798 27.405-222.023-144.769-406.743zm-186.266 27.726c-11.318 8.651-20.05 21.712-29.836 32.035-39.259 41.415-39.226 39.772-48.573 28.847-55.098-64.925-158.284-193.386-158.526-279.89-.095-34.173 41.933-20.111 61.49-12.068 50.789 20.887 89.506 35.064 145.134 74.242 87.128 61.365 301.059 258.27 353.604 413.152 6.227 18.354 23.452 58.506 4.717 73.59-11.067 8.91-23.624 3.118-35.397-.339-42.604-12.507-85.037-28.607-142.542-64.689-10.915-6.849-127.474-93.906-122.392-98.824 23.665-22.9 46.199-46.972 69.967-69.757 37.129-35.58-46.673-135.26-97.646-96.299zM800.104 1377.102c-13.529 12.697-60.909 60.275-60.913 60.278.032.433.076.898.134 1.375a14.72 14.72 0 0 0-1.356-.14c-3.305 3.815-7.241 7.03-10.565 10.832-.102.299-.299.904-.401 1.204-2.31.337-10.114 9.753-13.927 12.838.032.433.076.891.14 1.375-.471-.07-.923-.121-1.363-.146-1.705 2.182-11.763 11.794-12.768 12.774.038.51.083 1.038.14 1.586a33.23 33.23 0 0 0-1.134-.974c-1.73 2.241-9.747 5.998-12.399 5.763l-.153 1.891c-.427-1.477-2.878-1.987-3.401-.357-2.136-1.082-10.76-.08-17.863-4.623-8.696-6.003 7.475 8.617-31.681-30.089-9.096-9.991-11.047-25.649.866-42.1 2.695-.814.421-.436 61.116-61.088 51.02-50.984 61.472-74.08 104.72-24.873 8.816 10.029 28.047 28.912.808 54.474z"
@@ -130,65 +132,14 @@
     </footer>
   </body>
   <script>
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const offlineCtx = new OfflineAudioContext(2, 44100 * 40, 44100);
-    const play = document.querySelector(".play");
+    var soundID = "Airhorn";
 
-    source = offlineCtx.createBufferSource();
-
-    unlockAudioContext(audioCtx);
-    getData();
-
-    offlineCtx.oncomplete = function(e) {
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const horn = audioCtx.createBufferSource();
-      horn.buffer = e.renderedBuffer;
-
-      horn.connect(audioCtx.destination);
-
-      play.onclick = function() {
-        horn.start();
-      };
-    };
-
-    function getData() {
-      request = new XMLHttpRequest();
-      request.open("GET", "https://outlaw-ux.github.io/outlaw-airhorn/airhorn.mp3", true);
-      request.responseType = "arraybuffer";
-
-      request.onload = function() {
-        const audioData = request.response;
-
-        audioCtx.decodeAudioData(
-          audioData,
-          function(buffer) {
-            myBuffer = buffer;
-            source.buffer = myBuffer;
-            source.connect(offlineCtx.destination);
-            source.start();
-            offlineCtx.startRendering();
-          },
-
-          function(e) {
-            `Error with decoding audio data ${e.err}`;
-          }
-        );
-      };
-
-      request.send();
+    function loadSound () {
+      createjs.Sound.registerSound("airhorn.mp3", soundID);
     }
 
-    function unlockAudioContext(audioCtx) {
-      if (audioCtx.state !== "suspended") return;
-      const b = document.body;
-      const events = ["touchstart", "touchend", "mousedown", "keydown"];
-      events.forEach(e => b.addEventListener(e, unlock, false));
-      function unlock() {
-        audioCtx.resume().then(clean);
-      }
-      function clean() {
-        events.forEach(e => b.removeEventListener(e, unlock));
-      }
+    function playSound () {
+      createjs.Sound.play(soundID);
     }
   </script>
 </html>
